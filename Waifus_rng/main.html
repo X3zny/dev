@@ -256,7 +256,7 @@ body {
 <div id="stats">
     Rolls: 0<br>
     Coins: 0<br>
-    Luck: 1x<br>
+    Luck: 10000x<br>
     Best Roll: -
 </div>
 
@@ -347,7 +347,7 @@ const unequipBtn = document.getElementById("unequipBtn");
 
 // STATYSTYKI
 let rollsCount = 0;
-let luckMultiplier = 1;
+let luckMultiplier = 10000;
 let bestRoll = null;
 let coins = 0;
 
@@ -437,32 +437,57 @@ function finalRoll(){
 }
 
 function roll(){
-    rollBtn.disabled=true;
-    claimBtn.style.display="none";
-    overlay.style.display="flex";
-    chanceText.textContent="Rolling...";
+    rollBtn.disabled = true;
+    claimBtn.style.display = "none";
+    overlay.style.display = "flex";
+    chanceText.textContent = "Rolling...";
     rollsCount++;
-    let ticks=0;
-    const fakeRoll=setInterval(()=>{
+
+    let ticks = 0;
+    const fakeRoll = setInterval(()=>{
         const r = pool[Math.floor(Math.random()*pool.length)];
-        girlImg.src=r.img;
-        chanceText.textContent=`1 in ${r.chance} (${r.name})`;
-        girlImg.style.transform=`scale(${1+Math.sin(ticks/2)*0.03})`;
+        girlImg.src = r.img;
+        // Wyświetlamy dynamiczny tekst z szansą i nazwą
+        chanceText.textContent = `Rolling... 1 in ${r.chance} (${r.name})`;
+        girlImg.style.transform = `scale(${1 + Math.sin(ticks/2)*0.03})`;
         ticks++;
-    },80);
+    }, 80);
 
     setTimeout(()=>{
         clearInterval(fakeRoll);
-        const drop=finalRoll();
-        girlImg.src=drop.img;
-        chanceText.textContent=`1 in ${drop.chance} (${drop.name})`;
-        girlImg.style.transform="scale(1)";
-        claimBtn.style.display="inline-block";
-        rollBtn.disabled=false;
-        updateStats();
-    },2000);
-}
 
+        // Obliczamy efektywny mnożnik szczęścia
+        const totalLuck = luckMultiplier + (equippedGirl ? getLuckMultiplier(equippedGirl) : 0);
+
+        // Modyfikujemy finalRoll, aby uwzględniał totalLuck
+        let totalWeight = 0;
+        pool.forEach(p => {
+            totalWeight += 1 / Math.max(1, p.chance / totalLuck);
+        });
+        const r = Math.random() * totalWeight;
+        let sum = 0;
+        let drop = pool[0];
+        for(let i=0; i<pool.length; i++){
+            const effectiveChance = Math.max(1, pool[i].chance / totalLuck);
+            sum += 1 / effectiveChance;
+            if(r <= sum){
+                drop = pool[i];
+                unlocked.add(drop.img);
+                addToEquipment(drop);
+                coins += Math.floor(drop.chance/2);
+                if(!bestRoll || drop.chance > bestRoll.chance) bestRoll = drop;
+                break;
+            }
+        }
+
+        girlImg.src = drop.img;
+        chanceText.textContent = `You rolled: 1 in ${drop.chance} (${drop.name})`;
+        girlImg.style.transform = "scale(1)";
+        claimBtn.style.display = "inline-block";
+        rollBtn.disabled = false;
+        updateStats();
+    }, 2000);
+}
 // CLAIM
 claimBtn.addEventListener("click",()=>{overlay.style.display="none";});
 
