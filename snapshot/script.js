@@ -1,81 +1,74 @@
-const container = document.getElementById("mods-container");
-const selectedMods = new Set();
-let mods = [];
+const mods = [
+  {
+    title: "Latex Pack (Snapshot Community Pack)",
+    author: "bejak",
+    image:
+      "https://img.itch.zone/aW1nLzI2Mjg5NjQ5LnBuZw==/315x250%23c/lTSJ0o.png",
+    downloadLink: "https://mod.pl/download",
+  },
+  {
+    title: "Realistic Graphics Overhaul",
+    author: "GraphicsMaster",
+    image:
+      "https://img.itch.zone/aW1nLzI2MjExMTg2LnBuZw==/315x250%23c/4rMJyc.png",
+    downloadLink: "https://mod.pl/download",
+  },
+  {
+    title: "New Vehicles Collection",
+    author: "VehicleGuy",
+    image:
+      "https://img.itch.zone/aW1nLzI2MTU5Nzg1LnBuZw==/315x250%23c/kB%2BDmt.png",
+    downloadLink: "https://mod.pl/download",
+  },
+  {
+    title: "Huge Map Expansion",
+    author: "WorldBuilder",
+    image:
+      "https://img.itch.zone/aW1nLzI2MDg0ODYxLnBuZw==/315x250%23c/HigF24.png",
+    downloadLink: "https://mod.pl/download",
+  },
+  {
+    title: "Character Customization Pro",
+    author: "SkinMaster",
+    image:
+      "https://img.itch.zone/aW1nLzI2MDEzNzc2LmpwZw==/315x250%23c/tFq8D%2F.jpg",
+    downloadLink: "https://mod.pl/download",
+  },
+  {
+    title: "Survival Mode Overhaul",
+    author: "HardcoreDev",
+    image:
+      "https://img.itch.zone/aW1nLzI1ODI3NTgxLnBuZw==/315x250%23c/DjwVX3.png",
+    downloadLink: "https://mod.pl/download",
+  },
+];
 
-// Load mods.json
-async function loadMods() {
-  const data = await fetch("mods.json").then((r) => r.json());
+const grid = document.getElementById("mods-grid");
 
-  mods = data.map((mod) => ({
-    ...mod,
-    image: `content/${mod.id}/preview.png`,
-    path: `content/${mod.id}/`,
-  }));
-
-  renderMods();
-}
-
-// Render UI
-function renderMods() {
-  mods.forEach((mod) => {
-    const div = document.createElement("div");
-    div.className = "mod-card";
-
-    div.innerHTML = `
-      <img src="${mod.image}">
-      <h3>${mod.title}</h3>
+mods.forEach((mod) => {
+  const cardHTML = `
+        <div class="mod-card">
+            <img src="${mod.image}" alt="${mod.title}" class="mod-image">
+            <div class="mod-info">
+                <h3 class="mod-title">${mod.title}</h3>
+                <p class="mod-author">${mod.author}</p>
+                <a href="${mod.downloadLink}" target="_blank" class="mod-download">Download Mod</a>
+            </div>
+        </div>
     `;
+  grid.innerHTML += cardHTML;
+});
 
-    div.onclick = () => {
-      if (selectedMods.has(mod)) {
-        selectedMods.delete(mod);
-        div.classList.remove("selected");
-      } else {
-        selectedMods.add(mod);
-        div.classList.add("selected");
-      }
-    };
+const popup = document.getElementById("age-popup");
+const enterBtn = document.getElementById("enter-btn");
+const leaveBtn = document.getElementById("leave-btn");
 
-    container.appendChild(div);
-  });
-}
+// Enter
+enterBtn.addEventListener("click", () => {
+  popup.style.display = "none";
+});
 
-// Add mod folder to zip
-async function addFolderToZip(zip, mod) {
-  const folder = zip.folder(mod.id);
-
-  for (let file of mod.files) {
-    const response = await fetch(mod.path + file);
-    if (!response.ok) {
-      alert(`Missing file: ${mod.path + file}`);
-      continue;
-    }
-
-    const content = await response.blob();
-    folder.file(file, content);
-  }
-}
-
-// Download selected mods
-document.getElementById("downloadBtn").onclick = async () => {
-  if (selectedMods.size === 0) {
-    alert("Select at least one mod!");
-    return;
-  }
-
-  const zip = new JSZip();
-
-  for (let mod of selectedMods) {
-    await addFolderToZip(zip, mod);
-  }
-
-  const content = await zip.generateAsync({ type: "blob" });
-
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(content);
-  a.download = "mods.zip";
-  a.click();
-};
-
-// Start
-loadMods();
+// Leave
+leaveBtn.addEventListener("click", () => {
+  window.location.href = "https://google.com";
+});
