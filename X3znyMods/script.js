@@ -1,24 +1,21 @@
 const tools = [
   {
     title: "MelonLoader",
-    author: "Official",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Example_image.svg/960px-Example_image.svg.png",
-    downloadLink: "https://melonwiki.com/#download",
+    author: "LavaGang",
+    image: "https://github.com/X3zny/dev-db/blob/main/tools-images/melon-image.png?raw=true",
+    downloadLink: "https://github.com/lavagang/melonloader",
   },
   {
     title: "BepInEx",
     author: "BepInEx Team",
-    image: "https://example.com/bepinex-icon.png",
-    downloadLink:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Example_image.svg/960px-Example_image.svg.png",
+    image: "https://github.com/X3zny/dev-db/blob/main/tools-images/bepinex-image.png?raw=true",
+    downloadLink: "https://github.com/bepinex/bepinex",
   },
   {
-    title: "DnSpyEx",
+    title: "dnSpyEx",
     author: "Community",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Example_image.svg/960px-Example_image.svg.png",
-    downloadLink: "https://github.com/DerPopo/UABE/releases",
+    image: "https://github.com/X3zny/dev-db/blob/main/tools-images/dnspy-image.png?raw=true",
+    downloadLink: "https://github.com/dnSpyEx/dnSpy",
   },
 ];
 
@@ -31,7 +28,7 @@ tools.forEach((tool) => {
         <div class="mod-info">
             <h3 class="mod-title">${tool.title}</h3>
             <p class="mod-author">${tool.author}</p>
-            <a href="${tool.downloadLink}" target="_blank" class="mod-download">Download</a>
+            <a href="${tool.downloadLink}" target="_blank" class="mod-download">Github</a>
         </div>
     </div>
   `;
@@ -92,7 +89,7 @@ mods.forEach((mod) => {
             <div class="mod-info">
                 <h3 class="mod-title">${mod.title}</h3>
                 <p class="mod-author">${mod.author}</p>
-                <a href="${mod.downloadLink}" target="_blank" class="mod-download">Download Mod</a>
+                <a href="${mod.downloadLink}" target="_blank" class="mod-download">Github</a>
             </div>
         </div>
     `;
